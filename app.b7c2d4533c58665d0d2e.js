@@ -63,7 +63,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "d25844e29d8f48474e21";
+/******/ 	var hotCurrentHash = "b7c2d4533c58665d0d2e";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1338,14 +1338,14 @@ var Level1AI = /** @class */ (function (_super) {
         var _this = _super.call(this) || this;
         _this._zone = _zone;
         _this._rules = [];
-        _this._rules.push(_this.tryCapture(2));
         _this._rules.push(_this.tryCapture(4));
+        _this._rules.push(_this.tryCapture(2));
         _this._rules.push(_this.tryCapture(3));
         _this._rules.push(_this.tryCapture(1));
         _this._rules.push(_this.tryCapture(0));
+        _this._rules.push(_this.trySupply(3, 2));
+        _this._rules.push(_this.trySupply(4, 2));
         return _this;
-        // this._rules.push(this.trySupply(3, 2));
-        // this._rules.push(this.trySupply(4, 2));
     }
     Level1AI.prototype.Update = function (deltaTick) {
         var e_1, _a;
@@ -1408,24 +1408,25 @@ var Level1AI = /** @class */ (function (_super) {
             }
         };
     };
-    // private trySupply(fromIdx: number, targetIdx: number): Updatable {
-    //   const target = this._zone[targetIdx];
-    //   const from = this._zone[fromIdx];
-    //   const linked = this.getLinked(from);
-    //
-    //   return {
-    //     Update: function (): void {
-    //       if (target.owner != 2) return;
-    //       if (from.owner != 2) return;
-    //       for (const l of linked) {
-    //         if (l.to.owner != 2) return;
-    //       }
-    //
-    //       if (from.value<1) return;
-    //       from.fire(target, from.value);
-    //     }
-    //   };
-    // }
+    Level1AI.prototype.trySupply = function (fromIdx, targetIdx) {
+        var target = this._zone[targetIdx];
+        var from = this._zone[fromIdx];
+        var found = this.getLinked(from).find(function (e) { return e.to == target; });
+        if (found === undefined)
+            throw "Missing link " + fromIdx + " -> " + targetIdx;
+        var link = found;
+        return {
+            Update: function () {
+                if (target.owner != 2)
+                    return;
+                if (from.owner != 2)
+                    return;
+                if (from.value < 1)
+                    return;
+                from.fire(link, from.value);
+            }
+        };
+    };
     Level1AI.prototype.getLinked = function (zone) {
         var e_4, _a;
         var result = [];
@@ -2940,4 +2941,4 @@ __webpack_require__.r(__webpack_exports__);
 /***/ })
 
 /******/ });
-//# sourceMappingURL=app.d25844e29d8f48474e21.js.map
+//# sourceMappingURL=app.b7c2d4533c58665d0d2e.js.map
